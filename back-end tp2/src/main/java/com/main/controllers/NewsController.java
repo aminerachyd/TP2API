@@ -25,7 +25,7 @@ import com.main.repository.NewsDAO;
 
 @RestController
 @RequestMapping("/news")
-@CrossOrigin(origins = "URL FRONT") //FIXME Mettre l'url front end
+@CrossOrigin(origins = "http://localhost:3000") //FIXME Mettre l'url front end
 public class NewsController {
 	@Autowired
 	protected NewsDAO newsDAO;
