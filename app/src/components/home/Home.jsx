@@ -1,5 +1,5 @@
-import { Alert, AlertIcon, Container } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Alert, AlertIcon, Container, Divider, Text } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
 import AddNew from "./addnew/AddNew";
 import AllNews from "./allnews/AllNews";
 import { getNews } from "../../actions/news";
@@ -12,6 +12,9 @@ const Home = () => {
     pageNumber: 0,
     error: [false, ""],
   });
+
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     async function func() {
@@ -36,7 +39,7 @@ const Home = () => {
 
         setTimeout(() => {
           setState({
-            ...state,
+            ...stateRef.current,
             error: [false, ""],
           });
         }, 5000);
@@ -82,12 +85,12 @@ const Home = () => {
     console.log(res.data);
   };
 
-  const { news, loading, error } = state;
+  const { news, error } = state;
 
   return (
     <Container my={4} minW="70%">
       <AddNew addNewToState={addNewToState} />
-      {loading || news ? (
+      {news && news.length > 0 ? (
         <AllNews
           deleteNewFromState={deleteNewFromState}
           news={news}
@@ -95,7 +98,12 @@ const Home = () => {
           loadMoreNews={loadMoreNews}
         />
       ) : (
-        <>Pas de news</>
+        <>
+          <Divider my={3} borderColor="#333" />
+          <Text fontSize="xl" textAlign="center" w="100%">
+            Pas de news
+          </Text>
+        </>
       )}
 
       {error[0] && (

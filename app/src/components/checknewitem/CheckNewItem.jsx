@@ -11,7 +11,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getOneNews, deleteOneNews, updateOneNews } from "../../actions/news";
 import { useHistory } from "react-router-dom";
 
@@ -27,9 +27,13 @@ const CheckNewItem = ({ match }) => {
       contenu: "",
       datePublication: "",
     },
+    noNew: true,
     isEditable: false,
     error: [false, ""],
   });
+
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   const history = useHistory();
 
@@ -45,6 +49,7 @@ const CheckNewItem = ({ match }) => {
         } = res.data;
         setState({
           ...state,
+          noNew: false,
           newItem: {
             resume,
             contenu,
@@ -57,20 +62,11 @@ const CheckNewItem = ({ match }) => {
           },
         });
       } catch (error) {
+        // La new n'est pas récupérée, n'existe pas
         setState({
           ...state,
-          error: [
-            true,
-            "Une erreur est survenue, veuillez réessayer plus tard",
-          ],
+          noNew: true,
         });
-
-        setTimeout(() => {
-          setState({
-            ...state,
-            error: [false, ""],
-          });
-        }, 5000);
       }
     }
     func();
@@ -122,7 +118,7 @@ const CheckNewItem = ({ match }) => {
 
         setTimeout(() => {
           setState({
-            ...state,
+            ...stateRef.current,
             error: [false, ""],
           });
         }, 5000);
@@ -135,7 +131,7 @@ const CheckNewItem = ({ match }) => {
 
       setTimeout(() => {
         setState({
-          ...state,
+          ...stateRef.current,
           error: [false, ""],
         });
       }, 5000);
@@ -157,7 +153,7 @@ const CheckNewItem = ({ match }) => {
 
       setTimeout(() => {
         setState({
-          ...state,
+          ...stateRef.current,
           error: [false, ""],
         });
       }, 5000);
@@ -173,95 +169,106 @@ const CheckNewItem = ({ match }) => {
     <Container my={4} minW="70%">
       <Box my={3}>
         <Heading size="lg">La new :</Heading>
-        <Divider my={3} borderColor="#333" />
-        <Text fontWeight="semibold" color="gray.500">
-          {`Publiée le ${formattedDate}`}
-        </Text>
-        {!isEditable ? (
-          <Box>
-            <Text fontSize="xl" fontWeight="semibold">
-              Résumé de la new :
-            </Text>
-            <Text my={2} fontSize="lg">
-              {newItem.resume}
-            </Text>
-            <Text fontSize="xl" fontWeight="semibold">
-              Contenu de la new :
-            </Text>
-            <Text my={2} fontSize="lg">
-              {newItem.contenu}
-            </Text>
-            <Button
-              fontSize="lg"
-              onClick={(e) => toggleEdit(e)}
-              colorScheme="yellow"
-              w="100%"
-              my={2}
-            >
-              Modifier la new
+        {state.noNew ? (
+          <>
+            <Text fontSize="lg">404 : Cette new n'existe pas</Text>
+            <Button my={2} as="a" href="/" colorScheme="blue">
+              Retour à l'acceuil
             </Button>
-          </Box>
+          </>
         ) : (
           <>
-            <Text fontSize="xl" fontWeight="semibold">
-              Résumé de la new :
+            <Divider my={3} borderColor="#333" />
+            <Text fontWeight="semibold" color="gray.500">
+              {`Publiée le ${formattedDate}`}
             </Text>
-            <Input
-              name="resume"
-              onChange={(e) => onChange(e)}
-              my={2}
-              placeholder="Résumé de la new"
-              value={formData.resume}
-            />
-            <Text fontSize="xl" fontWeight="semibold">
-              Contenu de la new :
-            </Text>
-            <Textarea
-              name="contenu"
-              onChange={(e) => onChange(e)}
-              my={2}
-              placeholder="Contenu de la new"
-              value={formData.contenu}
-            />
-            <Button
-              fontSize="lg"
-              onClick={(e) => toggleEdit(e)}
-              colorScheme="yellow"
-              w="100%"
-              my={2}
-            >
-              Annuler modifications
-            </Button>{" "}
-            <Button
-              fontSize="lg"
-              onClick={(e) => saveNew(e)}
-              colorScheme="green"
-              w="100%"
-              my={2}
-            >
-              Sauvegarder les modifcations
-            </Button>
-            {state.error[0] && (
-              <Alert status="warning">
-                <AlertIcon />
-                {state.error[1]}
-              </Alert>
+            {!isEditable ? (
+              <Box>
+                <Text fontSize="xl" fontWeight="semibold">
+                  Résumé de la new :
+                </Text>
+                <Text my={2} fontSize="lg">
+                  {newItem.resume}
+                </Text>
+                <Text fontSize="xl" fontWeight="semibold">
+                  Contenu de la new :
+                </Text>
+                <Text my={2} fontSize="lg">
+                  {newItem.contenu}
+                </Text>
+                <Button
+                  fontSize="lg"
+                  onClick={(e) => toggleEdit(e)}
+                  colorScheme="yellow"
+                  w="100%"
+                  my={2}
+                >
+                  Modifier la new
+                </Button>
+              </Box>
+            ) : (
+              <>
+                <Text fontSize="xl" fontWeight="semibold">
+                  Résumé de la new :
+                </Text>
+                <Input
+                  name="resume"
+                  onChange={(e) => onChange(e)}
+                  my={2}
+                  placeholder="Résumé de la new"
+                  value={formData.resume}
+                />
+                <Text fontSize="xl" fontWeight="semibold">
+                  Contenu de la new :
+                </Text>
+                <Textarea
+                  name="contenu"
+                  onChange={(e) => onChange(e)}
+                  my={2}
+                  placeholder="Contenu de la new"
+                  value={formData.contenu}
+                />
+                <Button
+                  fontSize="lg"
+                  onClick={(e) => toggleEdit(e)}
+                  colorScheme="yellow"
+                  w="100%"
+                  my={2}
+                >
+                  Annuler modifications
+                </Button>{" "}
+                <Button
+                  fontSize="lg"
+                  onClick={(e) => saveNew(e)}
+                  colorScheme="green"
+                  w="100%"
+                  my={2}
+                >
+                  Sauvegarder les modifcations
+                </Button>
+                {state.error[0] && (
+                  <Alert status="warning">
+                    <AlertIcon />
+                    {state.error[1]}
+                  </Alert>
+                )}
+              </>
             )}
+            <HStack my={2}>
+              <Button as="a" href="/" fontSize="lg" colorScheme="blue" w="50%">
+                Retour aux news
+              </Button>
+              <Button
+                fontSize="lg"
+                onClick={(e) => deleteNew(e)}
+                colorScheme="red"
+                w="50%"
+              >
+                Supprimer la new
+              </Button>
+            </HStack>
           </>
         )}
-        <HStack my={2}>
-          <Button as="a" href="/" fontSize="lg" colorScheme="blue" w="50%">
-            Retour aux news
-          </Button>
-          <Button
-            fontSize="lg"
-            onClick={(e) => deleteNew(e)}
-            colorScheme="red"
-            w="50%"
-          >
-            Supprimer la new
-          </Button>
-        </HStack>
       </Box>
     </Container>
   );

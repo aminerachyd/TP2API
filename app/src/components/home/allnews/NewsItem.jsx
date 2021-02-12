@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { deleteOneNews } from "../../../actions/news";
 
 const NewsItem = ({ data, deleteNewFromState }) => {
@@ -19,6 +19,8 @@ const NewsItem = ({ data, deleteNewFromState }) => {
 
   const { id, datePublication, resume, contenu } = data;
 
+  const stateRef = useRef(state);
+  stateRef.current = state;
   /**
    * Fonction pour supprimer la new
    */
@@ -34,7 +36,7 @@ const NewsItem = ({ data, deleteNewFromState }) => {
 
       setTimeout(() => {
         setState({
-          ...state,
+          ...stateRef.current,
           error: [false, ""],
         });
       }, 5000);

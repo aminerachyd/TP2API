@@ -9,7 +9,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { saveNew } from "../../../actions/news";
 
@@ -17,8 +17,11 @@ const AddNew = ({ addNewToState }) => {
   let [state, setState] = useState({
     resume: "",
     contenu: "",
-    error: false,
+    error: [false, ""],
   });
+
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   /**
    * Fonction pour changer les valeurs de la state en parallèle avec les inputs
@@ -44,7 +47,7 @@ const AddNew = ({ addNewToState }) => {
 
         setTimeout(() => {
           setState({
-            ...state,
+            ...stateRef.current,
             error: [false, ""],
           });
         }, 5000);
@@ -57,7 +60,7 @@ const AddNew = ({ addNewToState }) => {
 
       setTimeout(() => {
         setState({
-          ...state,
+          ...stateRef.current,
           error: [false, ""],
         });
       }, 5000);
@@ -74,6 +77,7 @@ const AddNew = ({ addNewToState }) => {
         onChange={(e) => onChange(e)}
         my={2}
         placeholder="Résumé de la new"
+        value={state.resume}
       />
       <Text fontSize="xl">Contenu de la new :</Text>
       <Textarea
@@ -81,6 +85,7 @@ const AddNew = ({ addNewToState }) => {
         onChange={(e) => onChange(e)}
         my={2}
         placeholder="Contenu de la new"
+        value={state.contenu}
       />
       <Button
         onClick={(e) => onClick(e)}
