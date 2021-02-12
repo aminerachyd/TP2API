@@ -1,9 +1,22 @@
-import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { deleteOneNews } from "../../../actions/news";
 
 const NewsItem = ({ data, deleteNewFromState }) => {
+  const [state, setState] = useState({
+    error: [false, ""],
+  });
+
   const { id, datePublication, resume, contenu } = data;
 
   /**
@@ -14,7 +27,17 @@ const NewsItem = ({ data, deleteNewFromState }) => {
       await deleteOneNews(id);
       deleteNewFromState(id);
     } catch (error) {
-      console.log(error);
+      setState({
+        ...state,
+        error: [true, "Une erreur est survenue, veuillez réessayer plus tard"],
+      });
+
+      setTimeout(() => {
+        setState({
+          ...state,
+          error: [false, ""],
+        });
+      }, 5000);
     }
   };
 
@@ -39,6 +62,12 @@ const NewsItem = ({ data, deleteNewFromState }) => {
             Supprimer la new
           </Button>
         </HStack>
+        {state.error[0] && (
+          <Alert my={2} status="warning">
+            <AlertIcon />
+            {state.error[1]}
+          </Alert>
+        )}
       </VStack>
     </Box>
   );

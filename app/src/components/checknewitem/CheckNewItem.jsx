@@ -28,7 +28,7 @@ const CheckNewItem = ({ match }) => {
       datePublication: "",
     },
     isEditable: false,
-    error: false,
+    error: [false, ""],
   });
 
   const history = useHistory();
@@ -38,23 +38,40 @@ const CheckNewItem = ({ match }) => {
 
   useEffect(() => {
     async function func() {
-      const res = await getOneNews(id);
-      const {
-        payload: { contenu, datePublication, resume },
-      } = res.data;
-      setState({
-        ...state,
-        newItem: {
-          resume,
-          contenu,
-          datePublication,
-        },
-        formData: {
-          resume,
-          contenu,
-          datePublication,
-        },
-      });
+      try {
+        const res = await getOneNews(id);
+        const {
+          payload: { contenu, datePublication, resume },
+        } = res.data;
+        setState({
+          ...state,
+          newItem: {
+            resume,
+            contenu,
+            datePublication,
+          },
+          formData: {
+            resume,
+            contenu,
+            datePublication,
+          },
+        });
+      } catch (error) {
+        setState({
+          ...state,
+          error: [
+            true,
+            "Une erreur est survenue, veuillez réessayer plus tard",
+          ],
+        });
+
+        setTimeout(() => {
+          setState({
+            ...state,
+            error: [false, ""],
+          });
+        }, 5000);
+      }
     }
     func();
   }, []);
@@ -97,18 +114,31 @@ const CheckNewItem = ({ match }) => {
         // En cas d'erreur, on affiche une alerte
         setState({
           ...state,
-          error: true,
+          error: [
+            true,
+            "Le résumé de la new de doit pas être vide, et le contenu doit contenir au moins 10 caractères",
+          ],
         });
 
         setTimeout(() => {
           setState({
             ...state,
-            error: false,
+            error: [false, ""],
           });
         }, 5000);
       }
     } catch (error) {
-      console.log(error);
+      setState({
+        ...state,
+        error: [true, "Une erreur est survenue, veuillez réessayer plus tard"],
+      });
+
+      setTimeout(() => {
+        setState({
+          ...state,
+          error: [false, ""],
+        });
+      }, 5000);
     }
   };
 
@@ -120,7 +150,17 @@ const CheckNewItem = ({ match }) => {
       await deleteOneNews(id);
       history.push("/");
     } catch (error) {
-      console.log(error);
+      setState({
+        ...state,
+        error: [true, "Une erreur est survenue, veuillez réessayer plus tard"],
+      });
+
+      setTimeout(() => {
+        setState({
+          ...state,
+          error: [false, ""],
+        });
+      }, 5000);
     }
   };
 
@@ -201,11 +241,10 @@ const CheckNewItem = ({ match }) => {
             >
               Sauvegarder les modifcations
             </Button>
-            {state.error && (
+            {state.error[0] && (
               <Alert status="warning">
                 <AlertIcon />
-                Le résumé de la new de doit pas être vide, et le contenu doit
-                contenir au moins 10 caractères
+                {state.error[1]}
               </Alert>
             )}
           </>

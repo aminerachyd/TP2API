@@ -14,6 +14,7 @@ export const getNews = async (page = DEFAULT_PAGE, size = DEFAULT_SIZE) => {
     return res;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -27,6 +28,7 @@ export const getOneNews = async (id) => {
     return res;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -48,6 +50,7 @@ export const saveNew = async (data) => {
     return res;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -61,6 +64,7 @@ export const deleteOneNews = async (id) => {
     return res;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -74,5 +78,6 @@ export const updateOneNews = async (id, data) => {
     return res;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };

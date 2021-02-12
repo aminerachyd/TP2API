@@ -28,17 +28,37 @@ const AddNew = ({ addNewToState }) => {
   };
 
   const onClick = async (e) => {
-    if (state.resume.length > 0 && state.contenu.length > 9) {
-      const res = await saveNew(state);
+    try {
+      if (state.resume.length > 0 && state.contenu.length > 9) {
+        const res = await saveNew(state);
 
-      addNewToState(res.data.payload);
-    } else {
-      setState({ ...state, error: true });
+        addNewToState(res.data.payload);
+      } else {
+        setState({
+          ...state,
+          error: [
+            true,
+            "Le résumé de la new de doit pas être vide, et le contenu doit contenir au moins 10 caractères",
+          ],
+        });
+
+        setTimeout(() => {
+          setState({
+            ...state,
+            error: [false, ""],
+          });
+        }, 5000);
+      }
+    } catch (error) {
+      setState({
+        ...state,
+        error: [true, "Une erreur est survenue, veuillez réessayer plus tard"],
+      });
 
       setTimeout(() => {
         setState({
           ...state,
-          error: false,
+          error: [false, ""],
         });
       }, 5000);
     }
@@ -70,11 +90,10 @@ const AddNew = ({ addNewToState }) => {
       >
         Ajouter
       </Button>
-      {state.error && (
+      {state.error[0] && (
         <Alert my={2} status="warning">
           <AlertIcon />
-          Le résumé de la new de doit pas être vide, et le contenu doit contenir
-          au moins 10 caractères
+          {state.error[1]}
         </Alert>
       )}
     </Box>

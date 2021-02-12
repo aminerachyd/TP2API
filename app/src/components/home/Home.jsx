@@ -1,4 +1,4 @@
-import { Container } from "@chakra-ui/react";
+import { Alert, AlertIcon, Container } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import AddNew from "./addnew/AddNew";
 import AllNews from "./allnews/AllNews";
@@ -10,20 +10,37 @@ const Home = () => {
     loading: true,
     hasMore: false,
     pageNumber: 0,
+    error: [false, ""],
   });
 
   useEffect(() => {
     async function func() {
-      const res = await getNews();
-      console.log(res.data);
-      const { content, last, number } = res.data;
-      setState({
-        ...state,
-        news: content,
-        loading: false,
-        hasMore: !last,
-        pageNumber: number,
-      });
+      try {
+        const res = await getNews();
+        const { content, last, number } = res.data;
+        setState({
+          ...state,
+          news: content,
+          loading: false,
+          hasMore: !last,
+          pageNumber: number,
+        });
+      } catch (error) {
+        setState({
+          ...state,
+          error: [
+            true,
+            "Une erreur est survenue, veuillez réessayer plus tard",
+          ],
+        });
+
+        setTimeout(() => {
+          setState({
+            ...state,
+            error: [false, ""],
+          });
+        }, 5000);
+      }
     }
     func();
   }, []);
@@ -65,12 +82,11 @@ const Home = () => {
     console.log(res.data);
   };
 
-  const { news, loading } = state;
+  const { news, loading, error } = state;
 
   return (
     <Container my={4} minW="70%">
       <AddNew addNewToState={addNewToState} />
-
       {loading || news ? (
         <AllNews
           deleteNewFromState={deleteNewFromState}
@@ -79,7 +95,14 @@ const Home = () => {
           loadMoreNews={loadMoreNews}
         />
       ) : (
-        <>No news</>
+        <>Pas de news</>
+      )}
+
+      {error[0] && (
+        <Alert my={2} status="warning">
+          <AlertIcon />
+          {error[1]}
+        </Alert>
       )}
     </Container>
   );
