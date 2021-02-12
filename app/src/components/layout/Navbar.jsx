@@ -5,7 +5,7 @@ import React from "react";
 const Navbar = () => {
   return (
     <Flex justify="space-evenly" align="center" p={4} bg="blue.200">
-      <Heading size="xl">News app</Heading>
+      <Heading size="xl">News app - TP2 API Design</Heading>
       <List orientation="horizontal">
         <ListItem>
           <Link

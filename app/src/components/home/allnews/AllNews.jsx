@@ -1,4 +1,11 @@
-import { Box, Button, Divider, Heading, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Heading,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 import React from "react";
 import PropTypes from "prop-types";
 import NewsItem from "./NewsItem";
@@ -21,7 +28,7 @@ const AllNews = ({ news, deleteNewFromState, hasMore, loadMoreNews }) => {
           />
         ))}
       </SimpleGrid>
-      {hasMore && (
+      {hasMore ? (
         <Button
           onClick={(e) => loadMore(e)}
           fontSize="lg"
@@ -30,6 +37,13 @@ const AllNews = ({ news, deleteNewFromState, hasMore, loadMoreNews }) => {
         >
           Charger plus
         </Button>
+      ) : (
+        <>
+          <Divider my={3} borderColor="#333" />
+          <Text fontSize="xl" textAlign="center" w="100%">
+            Fin des news
+          </Text>
+        </>
       )}
     </Box>
   );

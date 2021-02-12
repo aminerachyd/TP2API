@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Divider,
@@ -12,26 +14,33 @@ import PropTypes from "prop-types";
 import { saveNew } from "../../../actions/news";
 
 const AddNew = ({ addNewToState }) => {
-  let [formData, setFormData] = useState({
+  let [state, setState] = useState({
     resume: "",
     contenu: "",
+    error: false,
   });
 
   /**
    * Fonction pour changer les valeurs de la state en parallèle avec les inputs
    */
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setState({ ...state, [e.target.name]: e.target.value });
   };
 
   const onClick = async (e) => {
-    if (formData.resume.length > 0 && formData.contenu.length > 9) {
-      const res = await saveNew(formData);
+    if (state.resume.length > 0 && state.contenu.length > 9) {
+      const res = await saveNew(state);
 
       addNewToState(res.data.payload);
     } else {
-      // TODO Une alerte ici
-      console.log("nn hh");
+      setState({ ...state, error: true });
+
+      setTimeout(() => {
+        setState({
+          ...state,
+          error: false,
+        });
+      }, 5000);
     }
   };
 
@@ -61,6 +70,13 @@ const AddNew = ({ addNewToState }) => {
       >
         Ajouter
       </Button>
+      {state.error && (
+        <Alert my={2} status="warning">
+          <AlertIcon />
+          Le résumé de la new de doit pas être vide, et le contenu doit contenir
+          au moins 10 caractères
+        </Alert>
+      )}
     </Box>
   );
 };

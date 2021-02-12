@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Container,
@@ -26,6 +28,7 @@ const CheckNewItem = ({ match }) => {
       datePublication: "",
     },
     isEditable: false,
+    error: false,
   });
 
   const history = useHistory();
@@ -91,8 +94,18 @@ const CheckNewItem = ({ match }) => {
           isEditable: false,
         });
       } else {
-        // TODO alerte ici
-        console.log("nn hh");
+        // En cas d'erreur, on affiche une alerte
+        setState({
+          ...state,
+          error: true,
+        });
+
+        setTimeout(() => {
+          setState({
+            ...state,
+            error: false,
+          });
+        }, 5000);
       }
     } catch (error) {
       console.log(error);
@@ -188,6 +201,13 @@ const CheckNewItem = ({ match }) => {
             >
               Sauvegarder les modifcations
             </Button>
+            {state.error && (
+              <Alert status="warning">
+                <AlertIcon />
+                Le résumé de la new de doit pas être vide, et le contenu doit
+                contenir au moins 10 caractères
+              </Alert>
+            )}
           </>
         )}
         <HStack my={2}>
