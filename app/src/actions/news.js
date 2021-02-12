@@ -1,11 +1,15 @@
 import axios from "../config/axiosConfig";
 
+// Page et taille par défaut pour la requête GET
+const DEFAULT_PAGE = 0;
+const DEFAULT_SIZE = 3;
+
 /**
  * Fonction pour récupérer les news depuis l'API
  */
-export const getNews = async () => {
+export const getNews = async (page = DEFAULT_PAGE, size = DEFAULT_SIZE) => {
   try {
-    const res = await axios.get("/news");
+    const res = await axios.get(`/news?size=${size}&page=${page}`);
 
     return res;
   } catch (error) {

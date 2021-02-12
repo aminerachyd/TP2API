@@ -33,10 +33,10 @@ const NewsItem = ({ data, deleteNewFromState }) => {
         <Text>{contenu}</Text>
         <HStack alignSelf="center">
           <Button as="a" href={`/new/${id}`} colorScheme="green">
-            Consulter la news
+            Consulter la new
           </Button>
           <Button colorScheme="red" onClick={(e) => deleteNew(e)}>
-            Supprimer la news
+            Supprimer la new
           </Button>
         </HStack>
       </VStack>

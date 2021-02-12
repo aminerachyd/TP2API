@@ -3,7 +3,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import NewsItem from "./NewsItem";
 
-const AllNews = ({ news, deleteNewFromState }) => {
+const AllNews = ({ news, deleteNewFromState, hasMore, loadMoreNews }) => {
+  const loadMore = (e) => {
+    loadMoreNews();
+  };
+
   return (
     <Box my={3}>
       <Heading size="lg">Toutes les news :</Heading>
@@ -17,9 +21,16 @@ const AllNews = ({ news, deleteNewFromState }) => {
           />
         ))}
       </SimpleGrid>
-      <Button fontSize="lg" colorScheme="blue" w="100%">
-        Charger plus
-      </Button>
+      {hasMore && (
+        <Button
+          onClick={(e) => loadMore(e)}
+          fontSize="lg"
+          colorScheme="blue"
+          w="100%"
+        >
+          Charger plus
+        </Button>
+      )}
     </Box>
   );
 };
@@ -27,6 +38,8 @@ const AllNews = ({ news, deleteNewFromState }) => {
 AllNews.propTypes = {
   news: PropTypes.array.isRequired,
   deleteNewFromState: PropTypes.func.isRequired,
+  hasMore: PropTypes.bool.isRequired,
+  loadMoreNews: PropTypes.func.isRequired,
 };
 
 export default AllNews;

@@ -8,7 +8,25 @@ const Home = () => {
   const [state, setState] = useState({
     news: [],
     loading: true,
+    hasMore: false,
+    pageNumber: 0,
   });
+
+  useEffect(() => {
+    async function func() {
+      const res = await getNews();
+      console.log(res.data);
+      const { content, last, number } = res.data;
+      setState({
+        ...state,
+        news: content,
+        loading: false,
+        hasMore: !last,
+        pageNumber: number,
+      });
+    }
+    func();
+  }, []);
 
   /**
    * Fonction pour retirer un objet news du tableau des news dans le state
@@ -30,14 +48,22 @@ const Home = () => {
     });
   };
 
-  useEffect(() => {
-    async function func() {
-      const res = await getNews();
-      const { content, first, last } = res.data;
-      setState({ ...state, news: content, loading: false });
-    }
-    func();
-  }, []);
+  /**
+   * Fonction pour charger plus de news depuis le serveur
+   */
+  const loadMoreNews = async () => {
+    const res = await getNews(state.pageNumber + 1);
+
+    const { content, last, number } = res.data;
+    setState({
+      ...state,
+      news: [...state.news, ...content],
+      loading: false,
+      hasMore: !last,
+      pageNumber: number,
+    });
+    console.log(res.data);
+  };
 
   const { news, loading } = state;
 
@@ -46,7 +72,12 @@ const Home = () => {
       <AddNew addNewToState={addNewToState} />
 
       {loading || news ? (
-        <AllNews deleteNewFromState={deleteNewFromState} news={news} />
+        <AllNews
+          deleteNewFromState={deleteNewFromState}
+          news={news}
+          hasMore={state.hasMore}
+          loadMoreNews={loadMoreNews}
+        />
       ) : (
         <>No news</>
       )}

@@ -81,14 +81,19 @@ const CheckNewItem = ({ match }) => {
    */
   const saveNew = async (e) => {
     try {
-      await updateOneNews(id, { ...formData, id });
-      setState({
-        ...state,
-        newItem: {
-          ...state.formData,
-        },
-        isEditable: false,
-      });
+      if (formData.resume.length > 0 && formData.contenu.length > 9) {
+        await updateOneNews(id, { ...formData, id });
+        setState({
+          ...state,
+          newItem: {
+            ...state.formData,
+          },
+          isEditable: false,
+        });
+      } else {
+        // TODO alerte ici
+        console.log("nn hh");
+      }
     } catch (error) {
       console.log(error);
     }

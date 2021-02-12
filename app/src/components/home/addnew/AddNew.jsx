@@ -25,16 +25,21 @@ const AddNew = ({ addNewToState }) => {
   };
 
   const onClick = async (e) => {
-    const res = await saveNew(formData);
+    if (formData.resume.length > 0 && formData.contenu.length > 9) {
+      const res = await saveNew(formData);
 
-    addNewToState(res.data.payload);
+      addNewToState(res.data.payload);
+    } else {
+      // TODO Une alerte ici
+      console.log("nn hh");
+    }
   };
 
   return (
     <Box my={3}>
       <Heading size="lg">Ajouter une new :</Heading>
       <Divider my={3} borderColor="#333" />
-      <Text fontSize="xl">Titre de la new :</Text>
+      <Text fontSize="xl">Résumé de la new :</Text>
       <Input
         name="resume"
         onChange={(e) => onChange(e)}
