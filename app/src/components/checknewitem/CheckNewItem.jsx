@@ -9,18 +9,37 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getOneNews, deleteOneNews } from "../../actions/news";
+import { useHistory } from "react-router-dom";
 
-const CheckNewItem = () => {
+const CheckNewItem = ({ match }) => {
   const [state, setState] = useState({
     newItem: {
-      title: "",
-      content: "",
+      resume: "",
+      contenu: "",
+      datePublication: "",
+    },
+    formData: {
+      resume: "",
+      contenu: "",
     },
     isEditable: false,
   });
 
-  const { newItem, isEditable } = state;
+  const history = useHistory();
+
+  const { newItem, formData, isEditable } = state;
+  const id = match.params.id;
+
+  useEffect(() => {
+    async function func() {
+      const res = await getOneNews(id);
+      console.log(res);
+      // TODO modifier la state ici
+    }
+    func();
+  }, []);
 
   /**
    * Fonction pour activer/désactiver le mode d'edition
@@ -38,7 +57,7 @@ const CheckNewItem = () => {
   const onChange = (e) => {
     setState({
       ...state,
-      newItem: { ...newItem, [e.target.name]: e.target.value },
+      formData: { ...formData, [e.target.name]: e.target.value },
     });
   };
 
@@ -48,11 +67,17 @@ const CheckNewItem = () => {
    */
   const saveNew = (e) => {};
 
-  //   TODO A completer par la requete à l'API
   /**
    * Fonction pour supprimer la new
    */
-  const deleteNew = (e) => {};
+  const deleteNew = async (e) => {
+    try {
+      await deleteOneNews(id);
+      history.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Container my={4} minW="70%">
@@ -61,13 +86,13 @@ const CheckNewItem = () => {
         <Divider my={3} borderColor="#333" />
         {!isEditable ? (
           <Box>
-            <Text fontSize="xl">Titre de la new :</Text>
+            <Text fontSize="xl">Résumé de la new :</Text>
             <Text my={2} fontSize="lg">
-              Un titre
+              {newItem.resume}
             </Text>
             <Text fontSize="xl">Contenu de la new :</Text>
             <Text my={2} fontSize="lg">
-              Un titre
+              {newItem.contenu}
             </Text>
             <Button
               fontSize="lg"
@@ -81,19 +106,21 @@ const CheckNewItem = () => {
           </Box>
         ) : (
           <>
-            <Text fontSize="xl">Titre de la new :</Text>
+            <Text fontSize="xl">Résumé de la new :</Text>
             <Input
-              name="title"
+              name="resume"
               onChange={(e) => onChange(e)}
               my={2}
-              placeholder="Titre"
+              placeholder="Résumé de la new"
+              value={formData.resume}
             />
             <Text fontSize="xl">Contenu de la new :</Text>
             <Textarea
-              name="content"
+              name="contenu"
               onChange={(e) => onChange(e)}
               my={2}
-              placeholder="Contenu"
+              placeholder="Contenu de la new"
+              value={formData.contenu}
             />
             <Button
               fontSize="lg"
@@ -111,7 +138,7 @@ const CheckNewItem = () => {
               w="100%"
               my={2}
             >
-              Sauvegarder la new
+              Sauvegarder les modifcations
             </Button>
           </>
         )}
