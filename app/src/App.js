@@ -12,13 +12,9 @@ function App() {
         <Navbar />
         <Switch>
           {/* La route home, contient les news avec un petit formulaire d'ajout de nouvelle new */}
-          <Route exact path="/">
-            <Home />
-          </Route>
+          <Route exact path="/" component={Home} />
           {/* La route d'une seule new, permet de visualiser toute la new avec possibilité de la modifier/supprimer */}
-          <Route exact path="/new/:id">
-            <CheckNewItem />
-          </Route>
+          <Route exact path="/new/:id" component={CheckNewItem} />
         </Switch>
       </ChakraProvider>
     </Router>

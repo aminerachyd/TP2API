@@ -10,6 +10,16 @@ const Home = () => {
     loading: true,
   });
 
+  /**
+   * Fonction pour retirer un objet news du tableau des news dans le state
+   */
+  const deleteNewFromState = (id) => {
+    setState({
+      ...state,
+      news: state.news.filter((newItem) => newItem.id !== id),
+    });
+  };
+
   useEffect(() => {
     async function func() {
       const res = await getNews();
@@ -21,13 +31,15 @@ const Home = () => {
 
   const { news, loading } = state;
 
-  console.log(news);
-
   return (
     <Container my={4} minW="70%">
       <AddNew />
 
-      {loading || news ? <AllNews news={news} /> : <>No news</>}
+      {loading || news ? (
+        <AllNews deleteNewFromState={deleteNewFromState} news={news} />
+      ) : (
+        <>No news</>
+      )}
     </Container>
   );
 };
