@@ -8,9 +8,10 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { saveNew } from "../../../actions/news";
 
-const AddNew = () => {
+const AddNew = ({ addNewToState }) => {
   let [formData, setFormData] = useState({
     resume: "",
     contenu: "",
@@ -24,11 +25,9 @@ const AddNew = () => {
   };
 
   const onClick = async (e) => {
-    const res = await saveNew({
-      ...formData,
-    });
+    const res = await saveNew(formData);
 
-    console.log(res);
+    addNewToState(res.data.payload);
   };
 
   return (
@@ -59,6 +58,10 @@ const AddNew = () => {
       </Button>
     </Box>
   );
+};
+
+AddNew.propTypes = {
+  addNewToState: PropTypes.func.isRequired,
 };
 
 export default AddNew;

@@ -20,6 +20,16 @@ const Home = () => {
     });
   };
 
+  /**
+   * Fonction pour ajouter un object news au tableau des news dans le state
+   */
+  const addNewToState = (data) => {
+    setState({
+      ...state,
+      news: [...state.news, data],
+    });
+  };
+
   useEffect(() => {
     async function func() {
       const res = await getNews();
@@ -33,7 +43,7 @@ const Home = () => {
 
   return (
     <Container my={4} minW="70%">
-      <AddNew />
+      <AddNew addNewToState={addNewToState} />
 
       {loading || news ? (
         <AllNews deleteNewFromState={deleteNewFromState} news={news} />

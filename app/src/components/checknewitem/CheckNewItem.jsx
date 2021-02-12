@@ -10,7 +10,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { getOneNews, deleteOneNews } from "../../actions/news";
+import { getOneNews, deleteOneNews, updateOneNews } from "../../actions/news";
 import { useHistory } from "react-router-dom";
 
 const CheckNewItem = ({ match }) => {
@@ -23,6 +23,7 @@ const CheckNewItem = ({ match }) => {
     formData: {
       resume: "",
       contenu: "",
+      datePublication: "",
     },
     isEditable: false,
   });
@@ -35,8 +36,22 @@ const CheckNewItem = ({ match }) => {
   useEffect(() => {
     async function func() {
       const res = await getOneNews(id);
-      console.log(res);
-      // TODO modifier la state ici
+      const {
+        payload: { contenu, datePublication, resume },
+      } = res.data;
+      setState({
+        ...state,
+        newItem: {
+          resume,
+          contenu,
+          datePublication,
+        },
+        formData: {
+          resume,
+          contenu,
+          datePublication,
+        },
+      });
     }
     func();
   }, []);
@@ -61,11 +76,23 @@ const CheckNewItem = ({ match }) => {
     });
   };
 
-  //   TODO A completer par la requete à l'API
   /**
    * Fonction pour sauvegarder la new
    */
-  const saveNew = (e) => {};
+  const saveNew = async (e) => {
+    try {
+      await updateOneNews(id, { ...formData, id });
+      setState({
+        ...state,
+        newItem: {
+          ...state.formData,
+        },
+        isEditable: false,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   /**
    * Fonction pour supprimer la new
@@ -79,18 +106,30 @@ const CheckNewItem = ({ match }) => {
     }
   };
 
+  const date = new Date(state.newItem.datePublication);
+  const formattedDate = `${date.getDate()}-${
+    date.getMonth() + 1
+  }-${date.getFullYear()}`;
+
   return (
     <Container my={4} minW="70%">
       <Box my={3}>
         <Heading size="lg">La new :</Heading>
         <Divider my={3} borderColor="#333" />
+        <Text fontWeight="semibold" color="gray.500">
+          {`Publiée le ${formattedDate}`}
+        </Text>
         {!isEditable ? (
           <Box>
-            <Text fontSize="xl">Résumé de la new :</Text>
+            <Text fontSize="xl" fontWeight="semibold">
+              Résumé de la new :
+            </Text>
             <Text my={2} fontSize="lg">
               {newItem.resume}
             </Text>
-            <Text fontSize="xl">Contenu de la new :</Text>
+            <Text fontSize="xl" fontWeight="semibold">
+              Contenu de la new :
+            </Text>
             <Text my={2} fontSize="lg">
               {newItem.contenu}
             </Text>
@@ -106,7 +145,9 @@ const CheckNewItem = ({ match }) => {
           </Box>
         ) : (
           <>
-            <Text fontSize="xl">Résumé de la new :</Text>
+            <Text fontSize="xl" fontWeight="semibold">
+              Résumé de la new :
+            </Text>
             <Input
               name="resume"
               onChange={(e) => onChange(e)}
@@ -114,7 +155,9 @@ const CheckNewItem = ({ match }) => {
               placeholder="Résumé de la new"
               value={formData.resume}
             />
-            <Text fontSize="xl">Contenu de la new :</Text>
+            <Text fontSize="xl" fontWeight="semibold">
+              Contenu de la new :
+            </Text>
             <Textarea
               name="contenu"
               onChange={(e) => onChange(e)}

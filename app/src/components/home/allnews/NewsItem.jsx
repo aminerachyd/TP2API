@@ -12,16 +12,17 @@ const NewsItem = ({ data, deleteNewFromState }) => {
   const deleteNew = async (e) => {
     try {
       await deleteOneNews(id);
-      // TODO Modifier la state
       deleteNewFromState(id);
     } catch (error) {
       console.log(error);
     }
   };
 
-  let date = new Date(datePublication);
+  const date = new Date(datePublication);
+  const formattedDate = `${date.getDate()}-${
+    date.getMonth() + 1
+  }-${date.getFullYear()}`;
 
-  let formattedDate = `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`;
   return (
     <Box p={5} border="1px" borderColor="#333" borderRadius={10}>
       <VStack align="start">

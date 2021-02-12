@@ -13,7 +13,6 @@ export const getNews = async () => {
   }
 };
 
-// TODO à revoir
 /**
  * Fonction pour récupérer une news depuis l'API
  */
@@ -33,20 +32,15 @@ export const getOneNews = async (id) => {
 export const saveNew = async (data) => {
   const { resume, contenu } = data;
 
-  // FIXME à régler, comment envoyer la date
-  const dataToSend = {
+  let date = new Date();
+  const payload = {
+    datePublication: date.toISOString().split(".")[0],
     resume,
     contenu,
-    datePublication: Date.now(),
   };
 
-  console.log(dataToSend);
-
   try {
-    const res = await axios.post("/news", dataToSend);
-
-    console.log(res);
-
+    const res = await axios.post("/news", payload);
     return res;
   } catch (error) {
     console.log(error);
@@ -66,7 +60,6 @@ export const deleteOneNews = async (id) => {
   }
 };
 
-// TODO à revoir
 /**
  * Fonction pour modifier une news depuis l'API
  */
