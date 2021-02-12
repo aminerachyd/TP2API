@@ -11,10 +11,16 @@ const NewsItem = ({ data }) => {
    */
   const deleteNew = (e) => {};
 
+  let date = new Date(datePublication);
+
+  let formattedDate = `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`;
   return (
     <Box p={5} border="1px" borderColor="#333" borderRadius={10}>
       <VStack align="start">
         <Heading size="md">{resume}</Heading>
+        <Text fontWeight="semibold" color="gray.500">
+          {`Publiée le ${formattedDate}`}
+        </Text>
         <Text>{contenu}</Text>
         <HStack alignSelf="center">
           <Button as="a" href={`/new/${id}`} colorScheme="green">

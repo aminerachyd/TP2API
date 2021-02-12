@@ -21,8 +21,6 @@ const Home = () => {
 
   const { news, loading } = state;
 
-  console.log(news);
-
   return (
     <Container my={4} minW="70%">
       <AddNew />
