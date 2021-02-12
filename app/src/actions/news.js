@@ -53,7 +53,6 @@ export const saveNew = async (data) => {
   }
 };
 
-// TODO à revoir
 /**
  * Fonction pour supprimer une news depuis l'API
  */

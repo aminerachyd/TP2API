@@ -1,15 +1,23 @@
 import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import React from "react";
+import { deleteOneNews } from "../../../actions/news";
 
-const NewsItem = ({ data }) => {
+const NewsItem = ({ data, deleteNewFromState }) => {
   const { id, datePublication, resume, contenu } = data;
 
-  //   TODO A completer par la requete à l'API
   /**
    * Fonction pour supprimer la new
    */
-  const deleteNew = (e) => {};
+  const deleteNew = async (e) => {
+    try {
+      await deleteOneNews(id);
+      // TODO Modifier la state
+      deleteNewFromState(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   let date = new Date(datePublication);
 
@@ -37,6 +45,7 @@ const NewsItem = ({ data }) => {
 
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired,
+  deleteNewFromState: PropTypes.func.isRequired,
 };
 
 export default NewsItem;
