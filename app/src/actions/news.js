@@ -9,7 +9,9 @@ const DEFAULT_SIZE = 3;
  */
 export const getNews = async (page = DEFAULT_PAGE, size = DEFAULT_SIZE) => {
   try {
-    const res = await axios.get(`/news?size=${size}&page=${page}`);
+    const res = await axios.get(
+      `/news?size=${size}&page=${page}&sort=datePublication,desc`
+    );
 
     return res;
   } catch (error) {
