@@ -10,10 +10,12 @@ paths:
     get:
       tags:
         - news-controller
+      summary: Recuperer une news spécifique
       operationId: getNews
       parameters:
         - name: id
           in: path
+          description: L'identifiant de la news
           required: true
           schema:
             type: integer
@@ -34,10 +36,12 @@ paths:
     put:
       tags:
         - news-controller
+      summary: Mettre à jour une news spécifique
       operationId: updateNews
       parameters:
         - name: id
           in: path
+          description: L'identifiant de la news
           required: true
           schema:
             type: integer
@@ -72,10 +76,12 @@ paths:
     delete:
       tags:
         - news-controller
+      summary: Supprimer une news spécifique
       operationId: deleteNews
       parameters:
         - name: id
           in: path
+          description: L'identifiant de la news
           required: true
           schema:
             type: integer
@@ -97,11 +103,12 @@ paths:
     get:
       tags:
         - news-controller
+      summary: Recuperer la collection de news
       operationId: getCollectionNews
       parameters:
         - name: page
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Pageable'
       responses:
@@ -128,6 +135,7 @@ paths:
     post:
       tags:
         - news-controller
+      summary: Créer une nouvelle news
       operationId: createNews
       requestBody:
         content:
@@ -154,11 +162,12 @@ paths:
     get:
       tags:
         - news-controller
+      summary: Recuperer la dernière news de la collection
       operationId: getLastNews
       parameters:
         - name: sort
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Sort'
       responses:
@@ -180,11 +189,12 @@ paths:
     get:
       tags:
         - news-controller
+      summary: Recuperer la première news de la collection
       operationId: getFirstNews
       parameters:
         - name: sort
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Sort'
       responses:
@@ -206,6 +216,7 @@ paths:
     get:
       tags:
         - news-controller
+      summary: Recuperer le nombre total de news
       operationId: getCountNews
       responses:
         '200':
@@ -291,11 +302,12 @@ components:
           minimum: 1
           type: integer
           format: int32
+          example: 5
         sort:
           type: array
           items:
             type: string
-            example: 'contenu,datePublication'
+            example: 'contenu,asc'
     PageNews:
       type: object
       properties:
@@ -335,7 +347,7 @@ components:
           type: array
           items:
             type: string
-            example: 'contenu,datePublication'
+            example: 'contenu,asc'
     ReponseServeurListNews:
       type: object
       properties:

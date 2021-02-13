@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.main.exceptions.Erreur;
 import com.main.exceptions.NewsNotFoundException;
 
+/* Classe chargée de gérer les exceptions rencontrées par le controller */
 @RestControllerAdvice
 public class ExceptionControllerHandler {
 	/* Les exceptions */

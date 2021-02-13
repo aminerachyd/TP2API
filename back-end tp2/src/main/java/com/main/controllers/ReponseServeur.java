@@ -16,6 +16,4 @@ public class ReponseServeur<P> {
 	public void setPayload(P payload) {
 		this.payload = payload;
 	}
-	
-	
 }
